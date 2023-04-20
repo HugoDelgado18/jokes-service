@@ -14,7 +14,6 @@ app.get('/jokes', async (req, res, next) => {
         res.send(jokes);    
      }
 
-    // const { tags, joke } = req.query;
     const where = {};
     if (req.query.tags){
       where.tags = {[Op.like]: `%${req.query.tags}%` }
@@ -23,19 +22,6 @@ app.get('/jokes', async (req, res, next) => {
     if (req.query.content){
       where.joke = {[Op.like]: `%${req.query.content}%` }
     }
-    // for(const key of ['tags', 'joke']){
-
-    //   if(req.query[key]){
-    //     if(key == "joke"){
-    //       where[key] = {
-    //         [Op.like]: `%${req.query[content]}%`
-    //       }
-    //     }
-    //     where[key] = {
-    //       [Op.like]: `%${req.query[key]}%`
-    //     }
-    //   }
-    // }
 
     const jokes = await Joke.findAll({
       where
@@ -48,6 +34,11 @@ app.get('/jokes', async (req, res, next) => {
     next(error)
   }
 });
+
+app.delete('/jokes/:id', async (req, res) => {
+  const joke = await Joke.deleteById(req.params.id);
+  res.send(joke);
+})
 
 // we export the app, not listening in here, so that we can run tests
 module.exports = app;
